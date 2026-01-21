@@ -1,0 +1,14 @@
+{
+  "phases": {
+    "setup": {
+      "nixPkgs": ["nodejs_20", "npm"],
+      "aptPkgs": []
+    },
+    "install": {
+      "cmds": ["cd backend && npm ci --omit=dev"]
+    }
+  },
+  "start": {
+    "cmd": "cd backend && npm start"
+  }
+}
