@@ -5,12 +5,11 @@
     },
     "install": {
       "cmds": [
-        "cd backend",
-        "npm ci --omit=dev"
+        "(cd backend && npm ci --omit=dev)"
       ]
     }
   },
   "start": {
-    "cmd": "node backend/server.js"
+    "cmd": "(cd backend && npm start)"
   }
 }
