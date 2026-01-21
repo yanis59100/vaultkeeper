@@ -2,11 +2,12 @@
   "name": "vaultkeeper",
   "version": "1.0.0",
   "private": true,
-  "workspaces": ["backend"],
   "scripts": {
-    "start": "npm start --workspace=backend"
+    "start": "cd backend && npm start",
+    "install": "cd backend && npm ci"
   },
   "engines": {
-    "node": ">=18.0.0"
+    "node": ">=18.0.0",
+    "npm": ">=9.0.0"
   }
 }

@@ -1,0 +1,27 @@
+# Ignore Python files
+*.py
+requirements.txt
+*.spec
+.salt.bin
+salt.bin
+
+# Ignore desktop app files
+dist/
+build_exe.py
+build_installer.py
+installer.py
+cli.py
+config.py
+encryption.py
+gui.py
+password_manager.py
+setup.py
+
+# Ignore docs and guides
+*.txt
+*.md
+!backend/*.md
+!backend/**/*.md
+
+# Ignore Chrome extension
+chrome-extension/
