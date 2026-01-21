@@ -225,4 +225,78 @@ class PasswordEncryption:
             self.decrypt_data()
             return True
         except:
-            return False
+            return False    
+    def get_encrypted_data(self) -> str:
+        """
+        Récupère les données chiffrées en base64 pour la synchronisation
+        
+        Returns:
+            str: Données chiffrées en base64
+        """
+        data_file = self._get_file_path(".passwords.enc")
+        
+        if not os.path.exists(data_file):
+            return ""
+        
+        try:
+            with open(data_file, 'rb') as f:
+                encrypted = f.read()
+            # Retourner en base64 pour transmission
+            return base64.b64encode(encrypted).decode()
+        except Exception as e:
+            raise ValueError(f"Erreur lors de la lecture des données: {e}")
+    
+    def get_salt(self) -> str:
+        """
+        Récupère le salt en base64 pour la synchronisation
+        
+        Returns:
+            str: Salt en base64
+        """
+        salt_file = self._get_file_path(".salt.bin")
+        
+        try:
+            with open(salt_file, 'rb') as f:
+                salt = f.read()
+            # Retourner en base64
+            return base64.b64encode(salt).decode()
+        except Exception as e:
+            raise ValueError(f"Erreur lors de la lecture du salt: {e}")
+    
+    def load_encrypted_data(self, encrypted_data_b64: str, salt_b64: str) -> None:
+        """
+        Charge des données chiffrées depuis le serveur
+        
+        Args:
+            encrypted_data_b64: Données chiffrées en base64
+            salt_b64: Salt en base64
+        """
+        try:
+            # Décoder depuis base64
+            encrypted_data = base64.b64decode(encrypted_data_b64)
+            salt = base64.b64decode(salt_b64)
+            
+            # Sauvegarder le salt
+            salt_file = self._get_file_path(".salt.bin")
+            with open(salt_file, 'wb') as f:
+                f.write(salt)
+            self._protect_file(salt_file)
+            
+            # Recalculer la clé avec le nouveau salt
+            self.cipher = self._get_cipher()
+            
+            # Sauvegarder les données chiffrées
+            data_file = self._get_file_path(".passwords.enc")
+            with open(data_file, 'wb') as f:
+                f.write(encrypted_data)
+            self._protect_file(data_file)
+            
+            # Calculer et sauvegarder le hash d'intégrité
+            content_hash = hashlib.sha256(encrypted_data).hexdigest()
+            hash_file = self._get_file_path(".hash")
+            with open(hash_file, 'w') as f:
+                f.write(content_hash)
+            self._protect_file(hash_file)
+            
+        except Exception as e:
+            raise ValueError(f"Erreur lors du chargement des données: {e}")

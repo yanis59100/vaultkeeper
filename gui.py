@@ -11,10 +11,12 @@ import secrets
 import webbrowser
 import random
 import math
+import threading
 from typing import Dict, List, Optional
 from datetime import datetime, timedelta
 from encryption import PasswordEncryption
 from password_manager import PasswordManager
+from backend_client import VaultKeeperBackendClient
 
 
 class FuturisticPasswordManager:
@@ -32,6 +34,11 @@ class FuturisticPasswordManager:
         self.password_manager = None
         self.master_password = None
         self.logged_in = False
+        
+        # Backend sync
+        self.backend_client = VaultKeeperBackendClient()
+        self.backend_available = self.backend_client.health_check()
+        self.sync_in_progress = False
         
         # UI State
         self.current_site = None
@@ -283,6 +290,18 @@ class FuturisticPasswordManager:
             fg=self.NEON_PURPLE
         )
         version.pack(pady=(5, 30))
+        
+        # Backend status indicator
+        backend_status = "🟢 CLOUD SYNC ONLINE" if self.backend_available else "🔴 LOCAL MODE"
+        backend_color = self.NEON_GREEN if self.backend_available else self.NEON_ORANGE
+        backend_label = tk.Label(
+            center,
+            text=backend_status,
+            font=("Consolas", 9, "bold"),
+            bg=self.CYBER_BG2,
+            fg=backend_color
+        )
+        backend_label.pack(pady=(0, 20))
         
         # Login form
         form = tk.Frame(center, bg=self.CYBER_BG2)
@@ -594,6 +613,24 @@ class FuturisticPasswordManager:
             width=10
         ).pack(side=tk.LEFT, padx=5)
         
+        # Cloud sync buttons (if backend available)
+        if self.backend_available:
+            self.create_neon_button(
+                btn_container,
+                "☁ LOGIN",
+                self.login_backend_account,
+                self.NEON_CYAN,
+                width=10
+            ).pack(side=tk.LEFT, padx=5)
+            
+            self.create_neon_button(
+                btn_container,
+                "⬆ SYNC UP",
+                self.sync_to_backend,
+                self.NEON_GREEN,
+                width=10
+            ).pack(side=tk.LEFT, padx=5)
+        
         self.create_neon_button(
             btn_container,
             "🔓 LOGOUT",
@@ -642,6 +679,24 @@ class FuturisticPasswordManager:
             self.NEON_PURPLE,
             width=25
         ).pack(pady=5)
+        
+        # Cloud sync buttons (if backend available)
+        if self.backend_available:
+            self.create_neon_button(
+                actions,
+                "☁ CLOUD SYNC",
+                self.sync_to_backend,
+                self.NEON_CYAN,
+                width=25
+            ).pack(pady=5)
+            
+            self.create_neon_button(
+                actions,
+                "⬇ PULL FROM CLOUD",
+                self.pull_from_backend,
+                self.NEON_BLUE,
+                width=25
+            ).pack(pady=5)
         
         # Filters
         tk.Label(
@@ -1321,14 +1376,181 @@ class FuturisticPasswordManager:
             except Exception as e:
                 messagebox.showerror("❌ ERROR", f"Export failed:\n{str(e)}")
     
+    def sync_to_backend(self):
+        """Synchroniser le coffre avec le serveur backend"""
+        if not self.backend_available:
+            messagebox.showwarning("⚠ NO SYNC", "Backend server not available.\nWorking in local mode.")
+            return
+        
+        if self.sync_in_progress:
+            messagebox.showinfo("⏳ SYNC", "Sync already in progress...")
+            return
+        
+        def do_sync():
+            self.sync_in_progress = True
+            try:
+                # Récupérer les données chiffrées
+                encrypted_data = self.password_manager.encryption.get_encrypted_data()
+                salt = self.password_manager.encryption.get_salt()
+                
+                # Envoyer au serveur
+                result = self.backend_client.sync_vault(encrypted_data, salt)
+                
+                if result['success']:
+                    messagebox.showinfo("✅ SYNC SUCCESS", f"Vault synced!\nVersion: {result.get('version', 'N/A')}")
+                else:
+                    messagebox.showerror("❌ SYNC FAILED", result['message'])
+            except Exception as e:
+                messagebox.showerror("❌ SYNC ERROR", str(e))
+            finally:
+                self.sync_in_progress = False
+        
+        # Lancer la sync en arrière-plan
+        sync_thread = threading.Thread(target=do_sync, daemon=True)
+        sync_thread.start()
+    
+    def pull_from_backend(self):
+        """Télécharger le coffre depuis le serveur backend"""
+        if not self.backend_available:
+            messagebox.showwarning("⚠ NO SYNC", "Backend server not available.")
+            return
+        
+        if self.sync_in_progress:
+            messagebox.showinfo("⏳ SYNC", "Sync already in progress...")
+            return
+        
+        def do_pull():
+            self.sync_in_progress = True
+            try:
+                result = self.backend_client.get_vault()
+                
+                if result['success']:
+                    data = result.get('data', {})
+                    # Déchiffrer et charger les données
+                    self.password_manager.encryption.load_encrypted_data(
+                        data.get('encrypted_data'),
+                        data.get('salt')
+                    )
+                    self.password_manager.accounts = self.password_manager.encryption.decrypt_data()
+                    messagebox.showinfo("✅ PULL SUCCESS", f"Vault pulled from server!\nVersion: {data.get('version', 'N/A')}")
+                    # Rafraîchir l'affichage
+                    self.refresh_passwords_display()
+                else:
+                    messagebox.showerror("❌ PULL FAILED", result['message'])
+            except Exception as e:
+                messagebox.showerror("❌ PULL ERROR", str(e))
+            finally:
+                self.sync_in_progress = False
+        
+        pull_thread = threading.Thread(target=do_pull, daemon=True)
+        pull_thread.start()
+    
+    def register_backend_account(self):
+        """Créer un compte backend pour la synchronisation"""
+        if not self.backend_available:
+            messagebox.showwarning("⚠ NO BACKEND", "Backend server not available.")
+            return
+        
+        # Simple dialog
+        register_window = tk.Toplevel(self.root)
+        register_window.title("🔐 Cloud Sync Registration")
+        register_window.geometry("400x250")
+        register_window.configure(bg=self.CYBER_BG2)
+        register_window.resizable(False, False)
+        
+        main_frame = tk.Frame(register_window, bg=self.CYBER_BG2)
+        main_frame.pack(fill=tk.BOTH, expand=True, padx=20, pady=20)
+        
+        tk.Label(main_frame, text="📧 Email:", bg=self.CYBER_BG2, fg=self.NEON_CYAN, font=("Consolas", 10)).pack(anchor="w")
+        email_entry = tk.Entry(main_frame, font=("Consolas", 10), bg=self.CYBER_BG3, fg=self.NEON_CYAN)
+        email_entry.pack(fill=tk.X, pady=(0, 15))
+        
+        tk.Label(main_frame, text="🔒 Password:", bg=self.CYBER_BG2, fg=self.NEON_CYAN, font=("Consolas", 10)).pack(anchor="w")
+        pwd_entry = tk.Entry(main_frame, show="●", font=("Consolas", 10), bg=self.CYBER_BG3, fg=self.NEON_CYAN)
+        pwd_entry.pack(fill=tk.X, pady=(0, 15))
+        
+        tk.Label(main_frame, text="Confirm:", bg=self.CYBER_BG2, fg=self.NEON_CYAN, font=("Consolas", 10)).pack(anchor="w")
+        confirm_entry = tk.Entry(main_frame, show="●", font=("Consolas", 10), bg=self.CYBER_BG3, fg=self.NEON_CYAN)
+        confirm_entry.pack(fill=tk.X, pady=(0, 20))
+        
+        def register():
+            email = email_entry.get().strip()
+            pwd = pwd_entry.get()
+            confirm = confirm_entry.get()
+            
+            if not email or not pwd or not confirm:
+                messagebox.showwarning("⚠ INCOMPLETE", "All fields required!")
+                return
+            
+            if pwd != confirm:
+                messagebox.showerror("❌ MISMATCH", "Passwords don't match!")
+                return
+            
+            result = self.backend_client.register(email, pwd)
+            if result['success']:
+                messagebox.showinfo("✅ SUCCESS", f"Account created!\nEmail: {email}")
+                register_window.destroy()
+            else:
+                messagebox.showerror("❌ ERROR", result['message'])
+        
+        self.create_neon_button(main_frame, "🚀 REGISTER", register, self.NEON_GREEN)
+    
+    def login_backend_account(self):
+        """Se connecter au compte backend"""
+        if not self.backend_available:
+            messagebox.showwarning("⚠ NO BACKEND", "Backend server not available.")
+            return
+        
+        login_window = tk.Toplevel(self.root)
+        login_window.title("🔐 Cloud Sync Login")
+        login_window.geometry("400x200")
+        login_window.configure(bg=self.CYBER_BG2)
+        login_window.resizable(False, False)
+        
+        main_frame = tk.Frame(login_window, bg=self.CYBER_BG2)
+        main_frame.pack(fill=tk.BOTH, expand=True, padx=20, pady=20)
+        
+        tk.Label(main_frame, text="📧 Email:", bg=self.CYBER_BG2, fg=self.NEON_CYAN, font=("Consolas", 10)).pack(anchor="w")
+        email_entry = tk.Entry(main_frame, font=("Consolas", 10), bg=self.CYBER_BG3, fg=self.NEON_CYAN)
+        email_entry.pack(fill=tk.X, pady=(0, 15))
+        
+        tk.Label(main_frame, text="🔒 Password:", bg=self.CYBER_BG2, fg=self.NEON_CYAN, font=("Consolas", 10)).pack(anchor="w")
+        pwd_entry = tk.Entry(main_frame, show="●", font=("Consolas", 10), bg=self.CYBER_BG3, fg=self.NEON_CYAN)
+        pwd_entry.pack(fill=tk.X, pady=(0, 20))
+        
+        def login_backend():
+            email = email_entry.get().strip()
+            pwd = pwd_entry.get()
+            
+            if not email or not pwd:
+                messagebox.showwarning("⚠ INCOMPLETE", "Email and password required!")
+                return
+            
+            result = self.backend_client.login(email, pwd)
+            if result['success']:
+                messagebox.showinfo("✅ LOGGED IN", f"Connected to cloud!\nEmail: {email}")
+                login_window.destroy()
+            else:
+                messagebox.showerror("❌ LOGIN FAILED", result['message'])
+        
+        self.create_neon_button(main_frame, "🔓 LOGIN", login_backend, self.NEON_GREEN)
+    
     def logout(self):
         """Logout"""
         if messagebox.askyesno("🔓 LOGOUT", "Logout and lock vault?"):
+            # Déconnecter du backend aussi
+            if self.backend_available and self.backend_client.is_authenticated():
+                self.backend_client.logout()
+            
             self.password_manager = None
             self.master_password = None
             self.logged_in = False
             self.current_site = None
             self.show_futuristic_login()
+    
+    def refresh_passwords_display(self):
+        """Rafraîchir l'affichage des mots de passe"""
+        self.update_sites_list()
 
 
 def main():

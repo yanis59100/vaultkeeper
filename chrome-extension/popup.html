@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VaultKeeper</title>
+    <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+    <!-- Canvas pour particules -->
+    <canvas id="particles"></canvas>
+    
+    <!-- Écran de connexion -->
+    <div id="loginScreen" class="screen">
+        <div class="logo">
+            <span class="logo-icon">🔐</span>
+            <h1 class="glow-text">VaultKeeper</h1>
+            <p class="subtitle">Gestionnaire de mots de passe sécurisé</p>
+        </div>
+        
+        <div class="form-container">
+            <div class="input-group">
+                <label>Mot de passe maître</label>
+                <input type="password" id="masterPassword" placeholder="Entrez votre mot de passe maître">
+            </div>
+            <button id="loginBtn" class="btn btn-primary">🔓 Déverrouiller</button>
+            <button id="createAccountBtn" class="btn btn-secondary">✨ Créer un coffre</button>
+        </div>
+        
+        <div id="loginError" class="error-message" style="display: none;"></div>
+    </div>
+    
+    <!-- Écran principal -->
+    <div id="mainScreen" class="screen" style="display: none;">
+        <div class="header">
+            <div class="header-left">
+                <span class="logo-icon-small">🔐</span>
+                <span class="header-title">VaultKeeper</span>
+            </div>
+            <div class="header-right">
+                <button id="addPasswordBtn" class="icon-btn" title="Ajouter">➕</button>
+                <button id="generateBtn" class="icon-btn" title="Générer">🎲</button>
+                <button id="lockBtn" class="icon-btn" title="Verrouiller">🔒</button>
+            </div>
+        </div>
+        
+        <div class="search-bar">
+            <input type="text" id="searchInput" placeholder="🔍 Rechercher un compte...">
+        </div>
+        
+        <div class="filters">
+            <button class="filter-btn active" data-filter="all">Tous</button>
+            <button class="filter-btn" data-filter="favorites">⭐ Favoris</button>
+        </div>
+        
+        <div id="passwordsList" class="passwords-list">
+            <!-- Les mots de passe seront ajoutés ici dynamiquement -->
+        </div>
+        
+        <div class="footer">
+            <span id="passwordCount">0 mots de passe</span>
+        </div>
+    </div>
+    
+    <!-- Modal Ajouter/Éditer -->
+    <div id="editModal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="modalTitle">Ajouter un mot de passe</h2>
+                <button class="close-btn">✖</button>
+            </div>
+            <div class="modal-body">
+                <div class="input-group">
+                    <label>Nom du compte *</label>
+                    <input type="text" id="editName" placeholder="Ex: Gmail, Facebook...">
+                </div>
+                <div class="input-group">
+                    <label>Nom d'utilisateur</label>
+                    <input type="text" id="editUsername" placeholder="email@example.com">
+                </div>
+                <div class="input-group">
+                    <label>Mot de passe *</label>
+                    <div class="password-input-group">
+                        <input type="password" id="editPassword" placeholder="••••••••">
+                        <button class="icon-btn" id="togglePassword">👁️</button>
+                        <button class="icon-btn" id="generatePassword">🎲</button>
+                    </div>
+                    <div id="strengthBar" class="strength-bar">
+                        <div id="strengthFill" class="strength-fill"></div>
+                    </div>
+                    <span id="strengthText" class="strength-text"></span>
+                </div>
+                <div class="input-group">
+                    <label>URL</label>
+                    <input type="url" id="editUrl" placeholder="https://example.com">
+                </div>
+                <div class="input-group">
+                    <label>Catégorie</label>
+                    <select id="editCategory">
+                        <option value="Other">Autre</option>
+                        <option value="Banking">Banque</option>
+                        <option value="Email">Email</option>
+                        <option value="Social">Réseaux sociaux</option>
+                        <option value="Work">Travail</option>
+                        <option value="Gaming">Gaming</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label>Notes</label>
+                    <textarea id="editNotes" rows="3" placeholder="Notes supplémentaires..."></textarea>
+                </div>
+                <div class="checkbox-group">
+                    <input type="checkbox" id="editFavorite">
+                    <label for="editFavorite">⭐ Marquer comme favori</label>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button id="saveBtn" class="btn btn-primary">💾 Enregistrer</button>
+                <button class="close-btn btn btn-secondary">Annuler</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Modal Générateur -->
+    <div id="generatorModal" class="modal" style="display: none;">
+        <div class="modal-content small">
+            <div class="modal-header">
+                <h2>Générateur de mot de passe</h2>
+                <button class="close-btn">✖</button>
+            </div>
+            <div class="modal-body">
+                <div class="generated-password">
+                    <input type="text" id="generatedPassword" readonly>
+                    <button class="icon-btn" id="copyGenerated">📋</button>
+                </div>
+                <div class="input-group">
+                    <label>Longueur: <span id="lengthValue">16</span></label>
+                    <input type="range" id="lengthSlider" min="8" max="32" value="16">
+                </div>
+                <div class="checkbox-group">
+                    <input type="checkbox" id="genUppercase" checked>
+                    <label for="genUppercase">Majuscules (A-Z)</label>
+                </div>
+                <div class="checkbox-group">
+                    <input type="checkbox" id="genLowercase" checked>
+                    <label for="genLowercase">Minuscules (a-z)</label>
+                </div>
+                <div class="checkbox-group">
+                    <input type="checkbox" id="genNumbers" checked>
+                    <label for="genNumbers">Chiffres (0-9)</label>
+                </div>
+                <div class="checkbox-group">
+                    <input type="checkbox" id="genSymbols" checked>
+                    <label for="genSymbols">Symboles (!@#$%)</label>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button id="regenerateBtn" class="btn btn-primary">🔄 Régénérer</button>
+                <button class="close-btn btn btn-secondary">Fermer</button>
+            </div>
+        </div>
+    </div>
+    
+    <script src="crypto.js"></script>
+    <script src="popup.js"></script>
+</body>
+</html>

@@ -1,0 +1,36 @@
+﻿ **VaultKeeper v1.0.0** - Secure Password Manager with Cyberpunk Design
+
+## Features
+ **Premium Features:**
+-  Military-grade AES-256 encryption
+-  Cyberpunk interface with 50 animated particles
+-  6 password categories (Banking, Email, Social, Work, Gaming, Other)
+-  Favorites system for quick access
+-  Password strength indicator
+-  Advanced password generator
+-  Export to JSON/CSV
+-  Auto-lock (15 min timeout)
+-  Notes and URL support
+-  Timestamps (created/modified)
+
+## System Requirements
+- Windows 7+ or Linux
+- No installation required (portable .exe)
+- Python 3.10+ (if running from source)
+
+## Quick Start
+1. Download VaultKeeper_v1.0.0.exe
+2. Double-click to launch
+3. Create master password
+4. Start managing passwords!
+
+## License
+MIT License - Free for personal and commercial use
+
+## Security
+- All passwords encrypted locally with AES-256-CBC
+- No internet required
+- No telemetry or tracking
+- Source code transparent and auditable on GitHub
+
+**Enjoy VaultKeeper! **
