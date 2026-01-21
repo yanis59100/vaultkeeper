@@ -2,8 +2,9 @@
   "name": "vaultkeeper",
   "version": "1.0.0",
   "description": "VaultKeeper Backend",
+  "main": "server.js",
   "scripts": {
-    "start": "bash start.sh"
+    "start": "node server.js"
   },
   "engines": {
     "node": ">=18.0.0"
