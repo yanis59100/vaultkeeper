@@ -10,7 +10,7 @@ COPY backend/package*.json ./
 RUN npm ci --omit=dev
 
 # Copy backend source code
-COPY backend .
+COPY backend/ .
 
 # Expose port
 EXPOSE 3000
