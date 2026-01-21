@@ -17,8 +17,4 @@ dist
 build
 .pytest_cache
 .coverage
-backend/node_modules
 chrome-extension/node_modules
-build_exe.py
-build_installer.bat
-build_installer.py
