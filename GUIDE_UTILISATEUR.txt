@@ -1,0 +1,249 @@
+🔐 PASSWORD MANAGER v2.0 - GUIDE DE DÉMARRAGE RAPIDE
+═══════════════════════════════════════════════════════════
+
+📦 LANCER L'APPLICATION
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Option 1 : MENU INTERACTIF (Recommandé) ⭐
+   → Double-cliquez : launch_menu.bat
+   → Choisissez l'option 1
+   → L'application se lance automatiquement
+
+Option 2 : EXÉCUTABLE DIRECT
+   → Naviguez dans : dist/
+   → Double-cliquez : PasswordManager.exe
+   
+Option 3 : RACCOURCI BUREAU
+   → Double-cliquez : create_shortcut.bat
+   → Un raccourci s'ajoute à votre Bureau
+   → Double-cliquez le raccourci pour lancer
+
+═══════════════════════════════════════════════════════════
+
+🎨 INTERFACE MODERNE
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Écran de connexion :
+┌─────────────────────────────────────────────────────┐
+│  🔐 Gestionnaire de Mots de Passe                   │
+│     Sécurisé • Fiable • Moderne                    │
+│                                                     │
+│  Mot de passe maître : [●●●●●●●●●]               │
+│                                                     │
+│  [🔓 Se connecter]                                 │
+│                                                     │
+│  Entrez votre mot de passe maître...              │
+└─────────────────────────────────────────────────────┘
+
+Écran principal :
+┌──────────────────────────────────────────────────────┐
+│ 📋 Gestionnaire de Mots de Passe                    │
+│                         [👁️ Afficher MDP] [🚪 Déco]│
+├──────────────────────────────────────────────────────┤
+│  🎯 OPÉRATIONS          │  📝 COMPTES ENREGISTRÉS   │
+│  ─────────────────────  │  ───────────────────────  │
+│  ➕ Ajouter un compte   │  Site │ User  │ Password  │
+│  🔄 Générer MDP        │  ───────────────────────  │
+│  🔍 Rechercher         │  Gmail│ mon@.. │ ●●●●●  │
+│  ✏️ Modifier           │  FB   │ john.. │ ●●●●●  │
+│  🗑️ Supprimer          │  Bank │ acc... │ ●●●●●  │
+│  💾 Exporter MDP       │                           │
+└──────────────────────────────────────────────────────┘
+
+═══════════════════════════════════════════════════════════
+
+👁️ AFFICHER/MASQUER LES MOTS DE PASSE
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Méthode 1 : Bouton en haut à droite
+   → Cliquez [👁️ Afficher MDP]
+   → Les mots de passe apparaissent dans la liste
+   → Cliquez [🙈 Masquer MDP] pour les cacher
+
+Méthode 2 : Dans les formulaires d'ajout/modification
+   Mot de passe : [●●●●●●●●●] [👁️]
+                                  ↑ Clic ici pour afficher
+
+Avertissement de sécurité :
+   ⚠️ "Les mots de passe sont maintenant VISIBLES!
+       Assurez-vous que personne ne regarde votre écran."
+
+═══════════════════════════════════════════════════════════
+
+➕ AJOUTER UN COMPTE
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+1. Cliquez [➕ Ajouter un compte]
+
+2. Remplissez les champs :
+   ┌────────────────────────────────────────┐
+   │ ➕ Ajouter un compte                  │
+   ├────────────────────────────────────────┤
+   │ Site/Service : [Gmail..................] │
+   │ Utilisateur/Email : [mon@gmail.com....] │
+   │ Mot de passe : [●●●●●●●●] [👁️]       │
+   │                                         │
+   │ ✓ Chiffrement AES-256                 │
+   │ ✓ Mot de passe stocké de manière...  │
+   │                                         │
+   │ [💾 Ajouter] [❌ Annuler]              │
+   └────────────────────────────────────────┘
+
+3. Cliquez [👁️] pour vérifier votre saisie
+
+4. Cliquez [💾 Ajouter]
+
+Validations :
+   ✓ Tous les champs sont obligatoires
+   ✓ Mot de passe minimum 6 caractères
+   ✓ Chiffrement automatique
+
+═══════════════════════════════════════════════════════════
+
+🔄 GÉNÉRER UN MOT DE PASSE
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+1. Cliquez [🔄 Générer mot de passe]
+
+2. Configurez :
+   ┌────────────────────────────────────────┐
+   │ 🔄 Générer un mot de passe            │
+   ├────────────────────────────────────────┤
+   │ Longueur : [━━━━━━━●━━━━━━━]  16 car │
+   │                                         │
+   │ Options :                              │
+   │ ✓ Majuscules (A-Z)                   │
+   │ ✓ Chiffres (0-9)                     │
+   │ ✓ Caractères spéciaux (!@#$...)      │
+   │                                         │
+   │ Résultat : KwZ9@mP2$qL7xN             │
+   │                                         │
+   │ [🔄 Générer] [📋 Copier] [❌ Fermer] │
+   └────────────────────────────────────────┘
+
+3. Cliquez [🔄 Générer] pour créer un nouveau
+
+4. Cliquez [📋 Copier] pour copier le mot de passe
+
+═══════════════════════════════════════════════════════════
+
+🔒 SÉCURITÉ MAXIMALE
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Chiffrement :
+   🔐 AES-256 (standard militaire)
+   🔐 Fernet (format de chiffrement sécurisé)
+
+Dérivation du mot de passe :
+   🔑 PBKDF2-SHA256
+   🔑 480 000 itérations (vs 100 000 avant)
+   🔑 Salt 32 bytes (vs 16 bytes avant)
+
+Vérification d'intégrité :
+   ✓ Hash HMAC-SHA256
+   ✓ Détection automatique de corruption
+   ✓ Alerte si données modifiées
+
+Stockage sécurisé :
+   📁 .salt.bin (caché) - Salt aléatoire
+   📁 .passwords.enc (caché) - Données chiffrées
+   📁 .hash.bin (caché) - Vérification d'intégrité
+
+═══════════════════════════════════════════════════════════
+
+⚠️ RECOMMANDATIONS DE SÉCURITÉ
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+MOT DE PASSE MAÎTRE :
+   ✗ "123456" - Trop simple
+   ✗ "password" - Trop commun
+   ✓ "KwZ9@mP2$qL7xN" - Fort et unique
+
+   Recommandé :
+   • Minimum 12 caractères
+   • Mélange de majuscules, minuscules, chiffres, symboles
+   • Unique (ne pas réutiliser)
+   • Mémorizable
+
+IMPORTANT :
+   🔴 Si vous oubliez votre mot de passe maître :
+      → Vous perdrez l'accès à TOUS vos comptes
+      → Il n'y a pas de moyen de le récupérer
+
+   🟡 Ne partez jamais sans votre mot de passe
+      → Conservez-le dans un endroit sûr
+      → Mémorisez-le bien
+
+   🟢 Sauvegardez régulièrement
+      → Faites des exports CSV
+      → Gardez les exports en sécurité
+
+═══════════════════════════════════════════════════════════
+
+📋 OPÉRATIONS PRINCIPALES
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Voir un mot de passe :
+   1. Cliquez [👁️ Afficher MDP]
+   2. Ou cliquez droit sur un compte (copie automatique)
+
+Modifier un compte :
+   1. Sélectionnez un compte
+   2. Cliquez [✏️ Modifier]
+   3. Changez les informations
+   4. Cliquez [💾 Modifier]
+
+Supprimer un compte :
+   1. Sélectionnez un compte
+   2. Cliquez [🗑️ Supprimer]
+   3. Confirmez la suppression
+
+Rechercher un compte :
+   1. Cliquez [🔍 Rechercher]
+   2. Entrez le nom du site ou utilisateur
+   3. Résultats affichés instantanément
+
+Exporter vos comptes :
+   1. Cliquez [💾 Exporter MDP]
+   2. Un fichier CSV est créé
+   3. Format : export_YYYYMMDD_HHMMSS.csv
+
+═══════════════════════════════════════════════════════════
+
+❓ DÉPANNAGE
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Q : Le .exe ne se lance pas
+R : • Vérifiez que Windows Defender n'a pas bloqué
+  • Exécutez create_shortcut.bat pour réinstaller
+  • Lancez via Python : python main.py
+
+Q : J'ai oublié mon mot de passe maître
+R : • Supprimez .salt.bin, .passwords.enc, .hash.bin
+  • Relancez l'application
+  • ⚠️ Tous vos comptes seront perdus
+
+Q : Impossible de copier les mots de passe
+R : • Appuyez sur CTRL+C après copie
+  • Ou regardez le mot de passe et copiez manuellement
+
+Q : Comment vérifier la sécurité ?
+R : • Menu : Option 4 pour infos de sécurité
+  • Voir IMPROVEMENTS_v2.md pour détails complets
+
+═══════════════════════════════════════════════════════════
+
+🎉 BON USAGE !
+
+Vous disposez maintenant d'un gestionnaire de mots de passe :
+   ✅ Moderne et facile d'utilisation
+   ✅ Extrêmement sécurisé
+   ✅ Portable (exécutable Windows)
+   ✅ Avec affichage des mots de passe
+
+Lancez l'application maintenant :
+   → Double-cliquez launch_menu.bat
+   → Choix 1 pour lancer
+   → Entrez un mot de passe maître fort
+
+═══════════════════════════════════════════════════════════
